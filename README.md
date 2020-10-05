@@ -53,6 +53,8 @@ optional arguments:
                         use signature. (default: None)
   --output_csv          Output machine-readable CSV files. (default: False)
   -v, --verbose         Print information along the way. (default: False)
+  -ol, --max_outgoing_links MAX_OUTGOING_LINKS
+						The maximum number of outgoing links from a portal. (default: 8)
 ```
 
 ### Portal list format
