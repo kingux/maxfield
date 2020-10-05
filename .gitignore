@@ -1,7 +1,5 @@
 *~
-output/
-include/
 tmp_*
 *.php
 *.pyc
-courtsquare/
+test/
