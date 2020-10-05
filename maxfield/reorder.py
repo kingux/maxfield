@@ -26,9 +26,9 @@ January 2020 - A complete re-write of original Ingress Maxfield.
 """
 
 import numpy as np
-from .field import can_add_outbound
+from field import can_add_outbound
 
-def reorder_links_origin(graph):
+def reorder_links_origin(graph, max_outgoing_links=8):
     """
     Re-order links in this graph to minimize build time.
     Links that do not complete fields may be built earlier.
@@ -81,7 +81,7 @@ def reorder_links_origin(graph):
             # origin
             #
             if (first and first[0] < i and
-                can_add_outbound(graph, link[1])):
+                can_add_outbound(graph, link[1], max_outgoing_links)):
                 #
                 # Add reversed link with the same properties, remove
                 # old edge, then move it

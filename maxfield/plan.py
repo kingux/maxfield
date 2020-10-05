@@ -30,9 +30,9 @@ import multiprocessing as mp
 import numpy as np
 import networkx as nx
 from scipy.spatial import ConvexHull
-from . import geometry
-from .generator import Generator, reset
-from .router import Router
+import geometry
+from generator import Generator, reset
+from router import Router
 
 # AP gained for various actions
 _AP_PER_PORTAL = 1750 # assuming capture and full resonator deployment
@@ -107,8 +107,9 @@ class Plan:
             self.graph.add_node(i)
             self.graph.nodes[i]['sbul'] = portal['sbul']
             self.graph.nodes[i]['keys'] = portal['keys']
+            self.graph.nodes[i]['outlinks'] = portal['outlinks']
 
-    def optimize(self, num_field_iterations=100, num_cpus=1):
+    def optimize(self, num_field_iterations=100, num_cpus=1, max_outgoing_links=8):
         """
         Generate many fielding plans and find the one that maximizes
         AP, minimizes single-agent walking distance, 
@@ -131,7 +132,7 @@ class Plan:
         #
         # Generate many field plans using a Generator
         #
-        generator = Generator(self)
+        generator = Generator(self, max_outgoing_links)
         if num_cpus == 1:
             #
             # No multiprocessing

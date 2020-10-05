@@ -28,7 +28,7 @@ January 2020 - A complete re-write of original Ingress Maxfield.
 import itertools
 import numpy as np
 
-_OUTGOING_LIMIT = 8
+#_OUTGOING_LIMIT = 8
 _OUTGOING_LIMIT_SBUL = 40 # assume fully deployed with SBULs
 
 class DeadendError(Exception):
@@ -39,7 +39,7 @@ class DeadendError(Exception):
         super(DeadendError, self).__init__(message)
         self.explain = message
 
-def can_add_outbound(graph, portal):
+def can_add_outbound(graph, portal, max_outgoing_links):
     """
     Check if a link can be added outbound from a portal.
 
@@ -53,12 +53,14 @@ def can_add_outbound(graph, portal):
       can_add :: boolean
         True if we can add another outgoing link from portal
     """
-    max_out = _OUTGOING_LIMIT
+    max_out = max_outgoing_links
+    
+    
     if graph.nodes[portal]['sbul']:
         max_out = _OUTGOING_LIMIT_SBUL
-    return graph.out_degree(portal) < max_out
+    return graph.out_degree(portal) < max_out - int(graph.nodes[portal]['outlinks'])
 
-def add_link(graph, portal1, portal2, reversible=False):
+def add_link(graph, portal1, portal2, reversible=False, max_outgoing_links=8):
     """
     Add a link to the graph from portal1 to portal2, if possible.
     Otherwise, try things in this order:
@@ -89,7 +91,7 @@ def add_link(graph, portal1, portal2, reversible=False):
     # Check that we haven't already reached the outgoing link limit
     #
     num_links = len(graph.link_order)
-    if can_add_outbound(graph, portal1):
+    if can_add_outbound(graph, portal1, max_outgoing_links):
         #
         # Add the link from portal1 to portal2
         #
@@ -102,7 +104,7 @@ def add_link(graph, portal1, portal2, reversible=False):
     # If link is reversible and portal2 hasn't reached outgoing link
     # limit, add link from portal2 to portal1
     #
-    if reversible and can_add_outbound(graph, portal2):
+    if reversible and can_add_outbound(graph, portal2, max_outgoing_links):
         graph.add_edge(portal2, portal1, order=num_links,
                        reversible=reversible,
                        fields=[], depends=[])
@@ -115,7 +117,7 @@ def add_link(graph, portal1, portal2, reversible=False):
     try:
         is_reversible, p1other = \
             zip(*[((graph.edges[portal1, link[1]]['reversible'] and
-                    can_add_outbound(graph, link[1])), link[1])
+                    can_add_outbound(graph, link[1], max_outgoing_links)), link[1])
                   for link in graph.edges(portal1)])
     except ValueError:
         # none are reversible
@@ -144,7 +146,7 @@ def add_link(graph, portal1, portal2, reversible=False):
     try:
         is_reversible, p2other = \
             zip(*[((graph.edges[portal2, link[1]]['reversible'] and
-                    can_add_outbound(graph, link[1])), link[1])
+                    can_add_outbound(graph, link[1], max_outgoing_links)), link[1])
                   for link in graph.edges(portal2)])
     except ValueError:
         # none are reversible
@@ -175,7 +177,7 @@ class Field:
     """
     A container for fields.
     """
-    def __init__(self, vertices, exterior=False):
+    def __init__(self, vertices, exterior=False, max_outgoing_links=8):
         """
         Initialize a new Field object.
 
@@ -198,6 +200,7 @@ class Field:
         # storage for the interior portal used to split this field
         # into children
         self.splitter = None
+        self.max_outgoing_links = max_outgoing_links
 
     def get_contents(self, portals_gno):
         """
@@ -270,11 +273,11 @@ class Field:
         # First is the field opposite to our anchor portal, so we can
         # treat it as an exterior field (it is the "tail").
         fld0 = Field([self.splitter, self.vertices[1], self.vertices[2]],
-                     exterior=True)
+                     exterior=True, max_outgoing_links=self.max_outgoing_links)
         fld1 = Field([self.vertices[0], self.vertices[1], self.splitter],
-                     exterior=False)
+                     exterior=False, max_outgoing_links=self.max_outgoing_links)
         fld2 = Field([self.vertices[0], self.vertices[2], self.splitter],
-                     exterior=False)
+                     exterior=False, max_outgoing_links=self.max_outgoing_links)
         self.children = [fld0, fld1, fld2]
 
     def build_links(self, graph, portals_gno):
@@ -313,7 +316,7 @@ class Field:
         #
         if not self.children:
             add_link(graph, self.vertices[2], self.vertices[1],
-                     reversible=True)
+                     reversible=True, max_outgoing_links=self.max_outgoing_links)
         #
         # Otherwise, recursively build children
         #
@@ -347,14 +350,14 @@ class Field:
         #
         if self.exterior:
             add_link(graph, self.vertices[1], self.vertices[0],
-                     reversible=True)
+                     reversible=True, max_outgoing_links=self.max_outgoing_links)
             add_link(graph, self.vertices[2], self.vertices[0],
-                     reversible=True)
+                     reversible=True, max_outgoing_links=self.max_outgoing_links)
         else:
             add_link(graph, self.vertices[0], self.vertices[1],
-                     reversible=False)
+                     reversible=False, max_outgoing_links=self.max_outgoing_links)
             add_link(graph, self.vertices[0], self.vertices[2],
-                     reversible=False)
+                     reversible=False, max_outgoing_links=self.max_outgoing_links)
         #
         # Build jet links for children
         #

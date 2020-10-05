@@ -26,7 +26,7 @@ January 2020 - A complete re-write of original Ingress Maxfield.
 """
 
 import numpy as np
-from .field import Field, DeadendError
+from field import Field, DeadendError
 
 # Number of attempts to complete a field in the event of a deadend
 _N_FIELD_ATTEMPTS = 100
@@ -35,7 +35,7 @@ class Fielder:
     """
     The Fielder object handles the field generation for a plan.
     """
-    def __init__(self, graph, portals_gno):
+    def __init__(self, graph, portals_gno, max_outgoing_links):
         """
         Create a new Fielder object.
 
@@ -51,6 +51,7 @@ class Fielder:
         """
         self.graph = graph
         self.portals_gno = portals_gno
+        self.max_outgoing_links = max_outgoing_links
 
     def reset(self, num_links, num_firstgen):
         """
@@ -123,7 +124,7 @@ class Fielder:
             #
             vertices = np.random.permutation(
                 perim_portals[[i, i-1, (i+1)%num_perim]])
-            fld = Field(vertices, exterior=True)
+            fld = Field(vertices, exterior=True, max_outgoing_links=self.max_outgoing_links)
             #
             # Try to build fields within this field
             #

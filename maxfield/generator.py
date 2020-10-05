@@ -27,10 +27,10 @@ January 2020 - A complete re-write of original Ingress Maxfield.
 
 import copy
 import numpy as np
-from .fielder import Fielder
-from .reorder import reorder_links_origin
-from .reorder import reorder_links_depends
-from .reorder import get_path_length
+from fielder import Fielder
+from reorder import reorder_links_origin
+from reorder import reorder_links_depends
+from reorder import get_path_length
 
 # Timeout link reordering after this many iterations
 _N_REORDER_ATTEMPTS = 100
@@ -61,7 +61,7 @@ class Generator:
     """
     The Generator object handles the field generation for a plan.
     """
-    def __init__(self, plan):
+    def __init__(self, plan, max_outgoing_links):
         """
         Create a new Generator object.
 
@@ -74,6 +74,7 @@ class Generator:
             A new Generator object.
         """
         self.plan = plan
+        self.max_outgoing_links = max_outgoing_links
 
     def generate(self, num):
         """
@@ -103,7 +104,7 @@ class Generator:
         #
         # Initialize fielder
         #
-        fielder = Fielder(graph, self.plan.portals_gno)
+        fielder = Fielder(graph, self.plan.portals_gno, self.max_outgoing_links)
         #
         # Attempt to generate fields to fill the graph
         #
@@ -124,7 +125,7 @@ class Generator:
         # Re-arrange links to minimize build time by grouping links with
         # common origins.
         #
-        reorder_links_origin(graph)
+        reorder_links_origin(graph, self.max_outgoing_links)
         #
         # Re-ordering may have altered fields and dependencies, so
         # reset and re-determine

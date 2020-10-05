@@ -27,8 +27,8 @@ January 2020 - A complete re-write of original Ingress Maxfield.
 
 import time
 
-from .plan import Plan
-from .results import Results
+from plan import Plan
+from results import Results
 
 __version__ = '4.0'
 
@@ -79,6 +79,7 @@ def read_portal_file(filename):
             lat = None
             keys = 0
             sbul = False
+            outlinks = 0
             for part in parts[1:]:
                 part = part.strip()
                 if not part:
@@ -103,6 +104,9 @@ def read_portal_file(filename):
                     lat, lon = coord_parts[1].split(',')
                     lat = float(lat)
                     lon = float(lon)
+                    continue
+                if 'outlinks' in part:
+                    outlinks = part[-2:-1]
                     continue
                 #
                 # See if this is number of keys
@@ -157,7 +161,7 @@ def read_portal_file(filename):
             # Populate portal dict and append
             #
             portals.append({'name':name, 'lon':lon, 'lat':lat,
-                            'keys': keys, 'sbul': sbul})
+                            'keys': keys, 'sbul': sbul, 'outlinks': outlinks})
     return portals
 
 def maxfield(filename, num_agents=1, num_field_iterations=1000,
@@ -165,7 +169,7 @@ def maxfield(filename, num_agents=1, num_field_iterations=1000,
              max_route_runtime=60,
              outdir='.', skip_plots=False, skip_step_plots=False,
              res_colors=False, google_api_key=None,
-             google_api_secret=None, output_csv=False, verbose=False):
+             google_api_secret=None, output_csv=False, verbose=False, max_outgoing_links=8, count_already_made_links=True):
     """
     Given a portal list file, determine the optimal linking and
     fielding strategy to maximize AP, minimize walking distance, and
@@ -234,7 +238,7 @@ def maxfield(filename, num_agents=1, num_field_iterations=1000,
     # Optimize Plan
     #
     plan.optimize(num_field_iterations=num_field_iterations,
-                  num_cpus=num_cpus)
+                  num_cpus=num_cpus, max_outgoing_links=max_outgoing_links)
     #
     # Determine agent link assignments
     #
