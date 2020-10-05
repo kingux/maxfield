@@ -14,6 +14,7 @@ usage: maxfield.py [-h] [--version] [-n NUM_AGENTS]
                    [--skip_plots] [--skip_step_plots] [-r]
                    [--google_api_key GOOGLE_API_KEY]
                    [--google_api_secret GOOGLE_API_SECRET] [--output_csv] [-v]
+				   [-ol] MAX_OUTGOING_LINKS
                    filename
 
 Ingress Maxfield: An Ingress Linking and Fielding Strategy Generator.
