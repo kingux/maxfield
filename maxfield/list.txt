@@ -1,0 +1,14 @@
+Psi hriste - Invalidovna;https://intel.ingress.com/intel?ll=50.09642,14.466378&z=16&pll=50.09642,14.466378;0
+Invalidovna - detske hriste;https://intel.ingress.com/intel?ll=50.096717,14.466416&z=16&pll=50.096717,14.466416;0
+Slon Fontána;https://intel.ingress.com/intel?ll=50.097454,14.465147&z=16&pll=50.097454,14.465147;0
+Prolejzačka;https://intel.ingress.com/intel?ll=50.09663,14.46669&z=16&pll=50.09663,14.46669;0
+Rybičky;https://intel.ingress.com/intel?ll=50.096538,14.465261&z=16&pll=50.096538,14.465261;0
+EXPO Building;https://intel.ingress.com/intel?ll=50.096896,14.464933&z=16&pll=50.096896,14.464933;0
+Outdoor gym Invalidovna;https://intel.ingress.com/intel?ll=50.095443,14.466015&z=16&pll=50.095443,14.466015;0
+Hroch;https://intel.ingress.com/intel?ll=50.095744,14.464089&z=16&pll=50.095744,14.464089;0
+Plameňáci šediví;https://intel.ingress.com/intel?ll=50.095541,14.464234&z=16&pll=50.095541,14.464234;0
+Swimmer;https://intel.ingress.com/intel?ll=50.096455,14.463731&z=16&pll=50.096455,14.463731;0
+Futurama Stone Chairs;https://intel.ingress.com/intel?ll=50.096103,14.463911&z=16&pll=50.096103,14.463911;0
+Metro B Invalidovna;https://intel.ingress.com/intel?ll=50.097374,14.464692&z=16&pll=50.097374,14.464692;0
+Concrete Waterfall;https://intel.ingress.com/intel?ll=50.096865,14.46355&z=16&pll=50.096865,14.46355;0
+Skleněná vitráž Sport;https://intel.ingress.com/intel?ll=50.097161,14.463934&z=16&pll=50.097161,14.463934;0
